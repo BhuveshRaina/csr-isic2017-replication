@@ -1,0 +1,38 @@
+# ---- Data (large; download separately via download_isic2017.sh) ----
+# The ISIC-2017 Test zip alone is ~5.8 GB — never commit these.
+data/
+*.zip
+
+# ---- Model checkpoints (109 MB per .pth; too large for GitHub) ----
+checkpoints/
+checkpoints_*/
+*.pth
+*.pt
+*.safetensors
+
+# ---- Saved experiment artifacts / figures ----
+*.png
+*.jpg
+*.jpeg
+explanation*.png
+log.txt
+/content/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# ---- Stray files from a bad `pip install pkg>=x` shell redirect ----
+# (empty 0-byte files named =0.16, =2.1, etc. — safe to delete manually)
+=*
+
+# ---- OS / editor ----
+.DS_Store
+.vscode/
+.idea/
+*.swp
