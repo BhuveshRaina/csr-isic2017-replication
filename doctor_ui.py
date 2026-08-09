@@ -28,8 +28,8 @@ Usage in a notebook:
 
     from doctor_ui import launch_ui
     ui = launch_ui(
-        weights="checkpoints_deduped/csr_network_final_best.pth",
-        atlas="checkpoints_deduped/atlas.pt",
+        weights="checkpoints_revive/csr_network_final_best.pth",
+        atlas="checkpoints_revive/atlas.pt",
         train_img="data/isic_224x224.zip",
         train_task2="data/ISIC-2017_Training_Part2_GroundTruth.zip",
         train_task3="data/ISIC-2017_Training_Part3_GroundTruth.csv",
@@ -388,7 +388,7 @@ class DoctorUI:
             self._refresh()
         return handler
 
-    def _save_discards(self, _, path="checkpoints_deduped/discarded_prototypes.pt"):
+    def _save_discards(self, _, path="checkpoints_revive/discarded_prototypes.pt"):
         """Persist the curated mask so evaluate_curated.py can measure its effect."""
         mask = self._prototype_mask()
         if mask is None:
@@ -430,7 +430,7 @@ class AtlasReview:
     """
 
     def __init__(self, pipe, discarded=None,
-                 save_path="checkpoints_deduped/discarded_prototypes.pt", thumb=130):
+                 save_path="checkpoints_revive/discarded_prototypes.pt", thumb=130):
         self.p = pipe
         self.discarded = discarded if discarded is not None else set()
         self.save_path = save_path
@@ -512,7 +512,7 @@ class AtlasReview:
         return self.save_path
 
 
-def review_atlas(source, save_path="checkpoints_deduped/discarded_prototypes.pt"):
+def review_atlas(source, save_path="checkpoints_revive/discarded_prototypes.pt"):
     """
     Launch the atlas review. `source` may be a Pipeline or an existing DoctorUI
     (passing the DoctorUI shares its discard set, so both views stay in sync).

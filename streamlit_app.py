@@ -81,7 +81,13 @@ def load_everything(ckpt_dir, backbone, device_str):
     net, K, M = build_csr_from_state(state, backbone, dev)
     net.eval()
 
-    atlas = torch.load(os.path.join(ckpt_dir, "atlas.pt"), map_location="cpu")
+    # The atlas is built from the Phase-2 prototypes. checkpoints_dropout only
+    # retrained the task head on top of the SAME frozen Phase-1/Phase-2 weights
+    # as checkpoints_revive, so revive's atlas is the correct atlas for it too.
+    atlas_path = os.path.join(ckpt_dir, "atlas.pt")
+    if not os.path.exists(atlas_path):
+        atlas_path = os.path.join("checkpoints_revive", "atlas.pt")
+    atlas = torch.load(atlas_path, map_location="cpu")
     tf = build_transforms(image_size=224, is_train=False)
     test_ds = ISIC2017Dataset("data/ISIC-2017_Test_v2_Data.zip",
                               "data/ISIC-2017_Test_v2_Part3_GroundTruth.csv",
@@ -173,8 +179,9 @@ def prob_bars(p_before, p_after):
 # ------------------------------------------------------------------- sidebar
 st.sidebar.title("Configuration")
 ckpt = st.sidebar.selectbox("Checkpoint", [
-    "checkpoints_revive", "checkpoints_revive_div",
-    "checkpoints_p1weighted_clsw", "checkpoints_deduped"], index=0)
+    "checkpoints_revive",    # best static model, macro-F1 65.66
+    "checkpoints_dropout"],  # concept-dropout model: supports doctor interaction
+    index=0)
 label_mode = st.sidebar.selectbox("Label (for boxes you draw)", ["positive", "negative"])
 alpha = st.sidebar.slider("Neutral weight α (paper: 0.2)", 0.0, 1.0, 0.2, 0.05)
 device_str = st.sidebar.selectbox("Device", ["cuda", "cpu"], index=0)
